@@ -31,18 +31,22 @@ const app = {
         ],
         tagsList: [...otherRouter.children],
         messageCount: 0,
-        dontCache: ['text-editor', 'artical-publish'] // 在这里定义你不想要缓存的页面的name属性值(参见路由配置router.js)
+        dontCache: [] // 在这里定义你不想要缓存的页面的name属性值(参见路由配置router.js)
     },
     mutations: {
         setTagsList (state, list) {
             state.tagsList.push(...list);
         },
         updateMenulist (state) {
-            let accessCode = parseInt(Cookies.get('access'));
             let menuList = [];
+            let menuPermissions = [];
+            let isAdmin = localStorage.isAdmin
+            if (isAdmin !== "1" && localStorage.menuPermissions) {
+                menuPermissions = JSON.parse(localStorage.menuPermissions)
+            }
             appRouter.forEach((item, index) => {
                 if (item.access !== undefined) {
-                    if (Util.showThisRoute(item.access, accessCode)) {
+                    if (isAdmin === "1" || Util.oneOf(item.access, menuPermissions)) {
                         if (item.children.length === 1) {
                             menuList.push(item);
                         } else {
@@ -50,7 +54,7 @@ const app = {
                             let childrenArr = [];
                             childrenArr = item.children.filter(child => {
                                 if (child.access !== undefined) {
-                                    if (child.access === accessCode) {
+                                    if (isAdmin === "1" || Util.oneOf(child.access, menuPermissions)) {
                                         return child;
                                     }
                                 } else {
@@ -68,7 +72,7 @@ const app = {
                         let childrenArr = [];
                         childrenArr = item.children.filter(child => {
                             if (child.access !== undefined) {
-                                if (Util.showThisRoute(child.access, accessCode)) {
+                                if (isAdmin === "1" || Util.oneOf(child.access, menuPermissions)) {
                                     return child;
                                 }
                             } else {

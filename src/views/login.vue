@@ -38,7 +38,9 @@
 </template>
 
 <script>
+import util from '@/libs/util.js';
 import Cookies from 'js-cookie';
+
 export default {
     data () {
         return {
@@ -48,28 +50,42 @@ export default {
             },
             rules: {
                 userName: [
-                    { required: true, message: '账号不能为空', trigger: 'blur' }
+                    { required: true, message: '账号不能为空', trigger: 'blur' },
                 ],
                 password: [
-                    { required: true, message: '密码不能为空', trigger: 'blur' }
+                    { required: true, message: '密码不能为空', trigger: 'blur' },
                 ]
             }
         };
     },
     methods: {
         handleSubmit () {
+            let _self = this;
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
-                    Cookies.set('user', this.form.userName);
-                    Cookies.set('password', this.form.password);
-                    this.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
-                    if (this.form.userName === 'iview_admin') {
-                        Cookies.set('access', 0);
-                    } else {
-                        Cookies.set('access', 1);
-                    }
-                    this.$router.push({
-                        name: 'home_index'
+                    util.ajax.post('/system/login', {
+                        username: this.form.userName,
+                        password: require('node-sha1')(this.form.password),
+                    }).then(res => {
+                        if (res.status === 200) {
+                            if (res.data.code === '0') {
+                                Cookies.set('user', this.form.userName);
+                                Cookies.set('token', res.data.content.token);
+                                _self.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
+                                if (res.data.content.permissions) {
+                                    _self.$store.commit('setPermissions', res.data.content.permissions);
+                                    //_self.$store.commit('setPermissions', {"isAdmin": "1", "menuPermissions": [1010, 1020, 1030, 1040, 1050, 1060, 1070, 1080, 1090, 1100, 1110, 1120, 1130], "optPermissions": [2, 3]});
+                                }
+                                _self.$router.push({
+                                    name: 'home_index',
+                                });
+                            } else {
+                                this.$Message.error('用户名密码错误！');
+                            }
+                        }
+                    }).catch (err => {
+                        this.$Message.error(err);
+                        console.log(err);
                     });
                 }
             });

@@ -1,7 +1,7 @@
 {
-  "name": "iview-admin",
-  "version": "1.3.1",
-  "description": "a management bases on iview",
+  "name": "iview-admin-template",
+  "version": "1.0.0",
+  "description": "a management template bases on iview-admin-1.3.1",
   "main": "index.js",
   "scripts": {
     "init": "webpack --progress --config build/webpack.dev.config.js",
@@ -12,9 +12,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/iview/iview-admin.git"
+    "url": "https://github.com/pplm/iview-admin.git"
   },
-  "author": "Lison<zhigang.li@tendcloud.com>",
+  "author": "Oracle<oraclegao@126.com>",
   "license": "MIT",
   "dependencies": {
     "area-data": "^1.0.0",
@@ -27,6 +27,7 @@
     "iview": "^2.8.0",
     "iview-area": "^1.5.16",
     "js-cookie": "^2.2.0",
+    "node-sha1": "^1.0.1",
     "rasterizehtml": "^1.2.4",
     "simplemde": "^1.11.2",
     "sortablejs": "^1.7.0",
