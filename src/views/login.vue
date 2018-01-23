@@ -75,6 +75,8 @@ export default {
                                 if (res.data.content.permissions) {
                                     _self.$store.commit('setPermissions', res.data.content.permissions);
                                     //_self.$store.commit('setPermissions', {"isAdmin": "1", "menuPermissions": [1010, 1020, 1030, 1040, 1050, 1060, 1070, 1080, 1090, 1100, 1110, 1120, 1130], "optPermissions": [2, 3]});
+                                } else {
+                                    _self.$store.commit('setPermissions', {"isAdmin": "1"});
                                 }
                                 _self.$router.push({
                                     name: 'home_index',
